@@ -51,8 +51,16 @@ class MainActivity : AppCompatActivity() {
                 // Launch coroutine to collect movies
                 launch {
                     movieViewModel.popularMovies.collect { movies ->
-                        // The movies list from StateFlow is added to the adapter
-                        movieAdapter.addMovies(movies)
+
+                        val currentYear =
+                            java.util.Calendar.getInstance().get(java.util.Calendar.YEAR).toString()
+
+                        val filteredSortedMovies =
+                            movies
+                                .filter { it.releaseDate?.startsWith(currentYear) == true }
+                                .sortedByDescending { it.popularity }
+
+                        movieAdapter.addMovies(filteredSortedMovies)
                     }
                 }
 
